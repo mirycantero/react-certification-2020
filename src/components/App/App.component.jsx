@@ -1,55 +1,60 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import AuthProvider from '../../providers/Auth';
+import SearchProvider from '../../providers/Search';
 import HomePage from '../../pages/Home';
 import LoginPage from '../../pages/Login';
 import NotFound from '../../pages/NotFound';
 import SecretPage from '../../pages/Secret';
+import VideoDetails from '../../pages/VideoDetails';
 import Private from '../Private';
-import Fortune from '../Fortune';
 import Layout from '../Layout';
-import { random } from '../../utils/fns';
+import NavigationBar from '../NavigationBar';
+
+const API_KEY = 'YOURAPIKEYHERE';
 
 function App() {
-  useLayoutEffect(() => {
-    const { body } = document;
+  const [isClientLoaded, setIsClientLoaded] = useState(false);
 
-    function rotateBackground() {
-      const xPercent = random(100);
-      const yPercent = random(100);
-      body.style.setProperty('--bg-position', `${xPercent}% ${yPercent}%`);
-    }
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/client.js';
 
-    const intervalId = setInterval(rotateBackground, 3000);
-    body.addEventListener('click', rotateBackground);
-
-    return () => {
-      clearInterval(intervalId);
-      body.removeEventListener('click', rotateBackground);
+    script.onload = () => {
+      window.gapi.load('client', () => {
+        window.gapi.client.setApiKey(API_KEY);
+        setIsClientLoaded(true);
+      });
     };
-  }, []);
+
+    document.body.appendChild(script);
+  });
+
+  if (!isClientLoaded) {
+    return null;
+  }
 
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Layout>
-          <Switch>
-            <Route exact path="/">
-              <HomePage />
-            </Route>
-            <Route exact path="/login">
-              <LoginPage />
-            </Route>
-            <Private exact path="/secret">
-              <SecretPage />
-            </Private>
-            <Route path="*">
-              <NotFound />
-            </Route>
-          </Switch>
-          <Fortune />
-        </Layout>
+        <SearchProvider>
+          <Layout>
+            <NavigationBar />
+            <Switch>
+              <Route exact path="/" component={HomePage} />
+              <Route exact path="/login" component={LoginPage} />
+              <Private exact path="/favorites">
+                <SecretPage />
+              </Private>
+              <Private exact path="/secret">
+                <SecretPage />
+              </Private>
+              <Route exact path="/:id" component={VideoDetails} />
+              <Route path="*" component={NotFound} />
+            </Switch>
+          </Layout>
+        </SearchProvider>
       </AuthProvider>
     </BrowserRouter>
   );
