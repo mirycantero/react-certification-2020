@@ -23,8 +23,10 @@ function HomePage() {
 
   return (
     <Suspense fallback={<Loader active inline="centered" />}>
-      <h1>Welcome to the Challenge!</h1>
-      <VideoList videos={videos} />
+      <div className="homepage">
+        <h1>Welcome to the Challenge!</h1>
+        <VideoList videos={videos} />
+      </div>
     </Suspense>
   );
 }
