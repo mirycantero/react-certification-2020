@@ -3,8 +3,15 @@ async function MakeRequest(method, path, params) {
     const response = await window.gapi.client.request({ method, path, params });
     return response.result;
   } catch (e) {
-    console.log('Error: ', e.result.error.message);
+    throw new Error(`Error: ${e.result.error.message}`);
   }
+}
+
+function mapVideos(video) {
+  return {
+    ...video,
+    id: video.id.videoId || video.id,
+  };
 }
 
 export async function getVideos(query, maxResults = 20) {
@@ -16,7 +23,7 @@ export async function getVideos(query, maxResults = 20) {
     fields: 'items(id(videoId),snippet(title, description, thumbnails))',
   });
 
-  return request.items;
+  return request.items.map(mapVideos);
 }
 
 export async function getVideo(videoId) {
@@ -27,7 +34,7 @@ export async function getVideo(videoId) {
     fields: 'items(id,snippet(title, description, thumbnails))',
   });
 
-  return request.items[0];
+  return request.items.map(mapVideos)[0] || null;
 }
 
 export async function getRelatedVideos(videoId, maxResults = 20) {
@@ -39,5 +46,5 @@ export async function getRelatedVideos(videoId, maxResults = 20) {
     fields: 'items(id(videoId),snippet(title, description, thumbnails))',
   });
 
-  return request.items;
+  return request.items.map(mapVideos);
 }
