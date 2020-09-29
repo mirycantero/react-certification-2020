@@ -1,8 +1,18 @@
 import React from 'react';
 import { Button, Embed } from 'semantic-ui-react';
+import styled from 'styled-components';
 
 import { useAuth } from '../../providers/Auth';
 import { useFavorites } from '../../providers/Favorites';
+
+const StyledEmbed = styled(Embed)`
+  margin-bottom: 16px;
+`;
+
+const StyledButtonWrapper = styled('div')`
+  display: flex;
+  flex-direction: row-reverse;
+`;
 
 function VideoDetail({ video }) {
   const { authenticated } = useAuth();
@@ -25,21 +35,21 @@ function VideoDetail({ video }) {
 
   return (
     <div>
-      <Embed
+      <StyledEmbed
         id={video.id}
         placeholder={video.snippet.thumbnails.medium.url}
         source="youtube"
       />
       <div>
         {authenticated && (
-          <div>
+          <StyledButtonWrapper>
             {!isFavorite && (
               <Button onClick={onAddFavoritesClick}>Add to favorites</Button>
             )}
             {isFavorite && (
               <Button onClick={onRemoveFavoritesClick}>Remove from favorites</Button>
             )}
-          </div>
+          </StyledButtonWrapper>
         )}
         <h2>{video.snippet.title}</h2>
         <p>{video.snippet.description}</p>

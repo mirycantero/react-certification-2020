@@ -8,7 +8,7 @@ function Favorites() {
   const { state } = useFavorites();
 
   return (
-    <Grid columns={3}>
+    <Grid columns={4}>
       {state.favorites.map(({ video }) => (
         <VideoCard key={video.id} video={video} />
       ))}

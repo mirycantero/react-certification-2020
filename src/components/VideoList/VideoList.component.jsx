@@ -5,7 +5,7 @@ import VideoCard from '../VideoCard';
 
 function VideoList({ videos }) {
   return (
-    <Grid columns={3}>
+    <Grid columns={4}>
       {videos.map((video) => (
         <VideoCard key={video.id} video={video} />
       ))}

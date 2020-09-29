@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Input, Menu } from 'semantic-ui-react';
+import styled from 'styled-components';
 
 import { useAuth } from '../../providers/Auth';
 import { useSearch } from '../../providers/Search';
+
+const StyledAvatar = styled('img')`
+  height: 32px;
+  width: 32px;
+`;
+
+const StyledAvatarContainer = styled('div')`
+  display: flex;
+  align-items: center;
+`;
 
 function NavigationBar() {
   const [value, setValue] = useState('');
@@ -53,7 +64,10 @@ function NavigationBar() {
       </Menu.Item>
       <Menu.Menu position="right">
         {authenticated ? (
-          <Menu.Item name="logout" onClick={deAuthenticate} />
+          <StyledAvatarContainer>
+            <Menu.Item name="logout" onClick={deAuthenticate} />
+            <StyledAvatar src="https://media.glassdoor.com/sqll/868055/wizeline-squarelogo-1473976610815.png" />
+          </StyledAvatarContainer>
         ) : (
           <Menu.Item>
             <Link to="/login">login</Link>
